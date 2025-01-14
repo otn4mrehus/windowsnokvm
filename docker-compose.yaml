@@ -1,0 +1,36 @@
+services:
+  windows:
+    image: dockurr/windows
+    container_name: windows10
+    environment:
+      - TZ=Asia/Jakarta # Timezone
+      - RDP_PASSWORD=0123456789 # Ganti dengan password RDP
+      - VERSION=10
+      - QEMU_CPU=host  #Jika tidak mengaktifkan KVM  
+    devices:
+#      - /dev/kvm
+      - /dev/net/tun
+    cap_add:
+      - NET_ADMIN
+    ports:
+      - 8006:8006
+      - 2189:3389/tcp
+      - 2189:3389/udp
+    volumes:
+      - ./data:/data # Direktori data untuk Windows
+    networks:
+      - local_network
+      - zerotier_network
+    deploy:
+      resources:
+        limits:
+          memory: 2G # Sesuaikan kebutuhan RAM
+          cpus: "1.0" # Sesuaikan kebutuhan CPU  
+    stop_grace_period: 2m
+
+networks:
+  local_network:
+    driver: bridge
+  zerotier_network:
+   # external: true
+    driver: bridge
